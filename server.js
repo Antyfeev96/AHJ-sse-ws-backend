@@ -1,6 +1,6 @@
 const http = require('http');
 const Koa = require('koa');
-const {streamEvents} = require('http-event-stream');
+const { streamEvents } = require('http-event-stream');
 const uuid = require('uuid');
 const Router = require('koa-router');
 const app = new Koa();
