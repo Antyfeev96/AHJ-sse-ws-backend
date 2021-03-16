@@ -36,4 +36,25 @@ app.use(async (ctx, next) => {
   }
 
   ctx.response.status = 204;
+  
+  router.get('/sse', async (ctx) => {
+    streamEvents(ctx.req, ctx.res, {
+      async fetch(lastEventId) {
+        console.log(lastEventId);
+        return [];
+      },
+      stream(sse) {
+        sse.sendEvent({data:'hello world'});
+
+        return () => {};
+      }
+    });
+
+    ctx.respond = false;
+  })
 })
+
+app.use(router.routes()).use(router.allowedMethods());
+
+const port = process.env.PORT || 7070;
+const server = http.createServer(app.callback()).listen(port)
