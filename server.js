@@ -52,6 +52,22 @@ app.use(async (ctx, next) => {
 
     ctx.respond = false;
   })
+
+  router.get('method=POST', async (ctx) => {
+    streamEvents(ctx.req, ctx.res, {
+      async fetch(lastEventId) {
+        console.log(ctx.request.query);
+        return [];
+      },
+      stream(sse) {
+        sse.sendEvent({data:'hello world'});
+
+        return () => {};
+      }
+    });
+
+    ctx.respond = false;
+  })
 })
 
 app.use(router.routes()).use(router.allowedMethods());
