@@ -1,0 +1,23 @@
+{
+  "name": "AHJ-sse-ws-backend",
+  "version": "1.0.0",
+  "description": "Backend part of sse-ws homework",
+  "main": "index.js",
+  "repository": "https://github.com/Antyfeev96/AHJ-sse-ws-backend.git",
+  "author": "Dmitri Antyfeev <60137521+Antyfeev96@users.noreply.github.com>",
+  "license": "MIT",
+  "dependencies": {
+    "forever": "^3.0.4",
+    "http-event-stream": "^0.2.0",
+    "koa": "^2.13.1",
+    "koa-body": "^4.2.0",
+    "koa-router": "^10.0.0",
+    "uuid": "^8.3.2",
+    "ws": "^7.4.4"
+  },
+  "scripts": {
+    "watch": "forever -w server.js",
+    "prestart": "npm install",
+    "start": "forever server.js"
+  }
+}
