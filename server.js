@@ -74,10 +74,10 @@ wsServer.on('connection', (ws, req) => {
   }
 
   ws.on('message', msg => {
-    console.log(msg);
-
-    Array.from(wsServer.clients)
+    if (msg === 'users') {
+      Array.from(wsServer.clients)
       .filter(o => o.readyState === WS.OPEN)
-      .forEach(o => o.send(msg));
+      .forEach(o => o.send(JSON.stringify(users)));
+    }
   });
 });
