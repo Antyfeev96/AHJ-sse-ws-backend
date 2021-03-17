@@ -60,25 +60,6 @@ app.use(async (ctx, next) => {
 
 const router = new Router();
 
-router.get("/users", async (ctx, next) => {
-  ctx.response.body = users;
-});
-
-router.post("/users", async (ctx, next) => {
-  users.push({ ...ctx.request.body, id:uuid.v4() });
-  ctx.response.status=204;
-});
-
-router.delete('/users/:id', async (ctx, next) => {
-  const index = users.findIndex(({ id }) => id === ctx.params.id);
-
-  if (index !== -1) {
-    users.splice(index,1);
-  }
-  ctx.response.status = 204;
-
-})
-
 app.use(router.routes()).use(router.allowedMethods());
 
 const port = process.env.PORT || 7070;
@@ -97,8 +78,6 @@ wsServer.on('connection', (ws, req) => {
 
     Array.from(wsServer.clients)
       .filter(o => o.readyState === WS.OPEN)
-      .forEach(o => o.send('some message'));
+      .forEach(o => o.send(msg));
   });
-
-  ws.send('welcome', errCallback);
 });
