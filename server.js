@@ -1,6 +1,6 @@
 const http = require("http");
 const Koa = require("koa");
-const uuid = require("uuid");
+const { v4: uuidv4 } = require('uuid');
 const Router = require("koa-router");
 const WS = require('ws');
 
@@ -9,15 +9,15 @@ const app = new Koa();
 const users = [
   {
     name: 'Mishka',
-    id: 1
+    id: uuidv4()
   },
   {
     name: 'Alex',
-    id: 2
+    id: uuidv4()
   },
   {
     name: 'Homelander',
-    id: 3
+    id: uuidv4()
   }
 ];
 
@@ -69,15 +69,25 @@ const wsServer = new WS.Server({server});
 wsServer.on('connection', (ws, req) => {
   const errCallback = (err) => {
     if (err) {
-      console.log('error');
+      console.log(err);
     }
   }
 
   ws.on('message', msg => {
-    if (msg === 'users') {
-      Array.from(wsServer.clients)
-      .filter(o => o.readyState === WS.OPEN)
-      .forEach(o => o.send(JSON.stringify(users)));
+    const request = JSON.parse(msg);
+    if (request.type === 'addUser') {
+      if (users.find(user => user.name === request.name)) {
+        ws.send('Никнейм занят', errCallback('Никнейм занят'));
+      } else {
+        users.push({
+          name: request.name,
+          id: uuidv4()
+        })
+        Array.from(wsServer.clients)
+          .filter(o => o.readyState === WS.OPEN)
+          .forEach(o => o.send(JSON.stringify(users)));
+      }
+      return;
     }
   });
 });
