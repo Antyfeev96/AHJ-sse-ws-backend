@@ -21,6 +21,21 @@ const users = [
   }
 ];
 
+const messages = [
+  {
+    name: 'Mishka',
+    text: 'Hello there!!!'
+  },
+  {
+    name: 'Alex',
+    text: 'Hello' 
+  },
+  {
+    name: 'Homelander',
+    text: 'I can do whatever I want!'
+  }
+];
+
 app.use(async (ctx, next) => {
   const origin = ctx.request.get("Origin");
   if (!origin) {
@@ -89,5 +104,18 @@ wsServer.on('connection', (ws, req) => {
       }
       return;
     }
+
+    if (request.type === 'sendMessage') {
+      messages.push({
+        name: request.name,
+        text: request.text
+      });
+      console.log(messages);
+      Array.from(wsServer.clients)
+        .filter(o => o.readyState === WS.OPEN)
+        .forEach(o => o.send(JSON.stringify(messages)));
+    }
   });
+
+  // setInterval(() => ws.send(messages), 5000);
 });
