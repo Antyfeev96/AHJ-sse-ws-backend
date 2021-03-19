@@ -19,5 +19,8 @@
     "watch": "forever -w server.js",
     "prestart": "npm install",
     "start": "forever server.js"
+  },
+  "engines": {
+    "node": "11.x"
   }
 }
