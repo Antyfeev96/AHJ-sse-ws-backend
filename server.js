@@ -100,7 +100,10 @@ wsServer.on('connection', (ws, req) => {
         })
         Array.from(wsServer.clients)
           .filter(o => o.readyState === WS.OPEN)
-          .forEach(o => o.send(JSON.stringify(users)));
+          .forEach(o => {
+            o.send(JSON.stringify(users));
+            o.send(JSON.stringify(messages));
+          })
       }
       return;
     }
@@ -116,6 +119,4 @@ wsServer.on('connection', (ws, req) => {
         .forEach(o => o.send(JSON.stringify(messages)));
     }
   });
-
-  // setInterval(() => ws.send(messages), 5000);
 });
