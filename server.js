@@ -6,34 +6,12 @@ const WS = require('ws');
 
 const app = new Koa();
 
+const clients = new Set();
+
 const users = [
-  {
-    name: 'Mishka',
-    id: uuidv4()
-  },
-  {
-    name: 'Alex',
-    id: uuidv4()
-  },
-  {
-    name: 'Homelander',
-    id: uuidv4()
-  }
 ];
 
 const messages = [
-  {
-    name: 'Mishka',
-    text: 'Hello there!!!'
-  },
-  {
-    name: 'Alex',
-    text: 'Hello' 
-  },
-  {
-    name: 'Homelander',
-    text: 'I can do whatever I want!'
-  }
 ];
 
 app.use(async (ctx, next) => {
@@ -94,6 +72,8 @@ wsServer.on('connection', (ws, req) => {
       if (users.find(user => user.name === request.name)) {
         ws.send('Никнейм занят', errCallback('Никнейм занят'));
       } else {
+        clients.add(ws)
+        console.log(clients.size);
         users.push({
           name: request.name,
           id: uuidv4()
@@ -103,7 +83,7 @@ wsServer.on('connection', (ws, req) => {
           .forEach(o => {
             o.send(JSON.stringify(users));
             o.send(JSON.stringify(messages));
-          })
+          });
       }
       return;
     }
@@ -113,10 +93,15 @@ wsServer.on('connection', (ws, req) => {
         name: request.name,
         text: request.text
       });
-      console.log(messages);
       Array.from(wsServer.clients)
         .filter(o => o.readyState === WS.OPEN)
         .forEach(o => o.send(JSON.stringify(messages)));
     }
   });
+
+  ws.on('close', () => {
+    clients.delete(ws);
+    console.log(clients.size);
+  })
 });
+
